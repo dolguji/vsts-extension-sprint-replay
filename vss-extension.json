@@ -1,11 +1,11 @@
 {
     "manifestVersion": 1,
-    "id": "vsts-extension-ts-seed-simple",
-    "version": "0.1.0",
-    "name": "vsts-extension-ts-seed-simple",
+    "id": "vsts-extension-sprint-replay",
+    "version": "0.1.2",
+    "name": "Sprint Replay",
     "scopes": [ "vso.work", "vso.work_write" ],
-    "description": "Describe your extension.",
-    "publisher": "<your-publisher>",
+    "description": "Replay board",
+    "publisher": "blueprint",
     "public": false,
     "icons": {
         "default": "img/logo.png"
@@ -65,15 +65,15 @@
         "Integrate"
     ],
     "contributions": [
-        {
-            "id": "vsts-extension-ts-seed-simple-action",
-            "type": "ms.vss-web.action-provider",
+         {
+            "id": "vsts-extension-sprint-replay",
+            "type": "ms.vss-web.hub",
             "description": "",
             "targets": [
-                "ms.vss-work-web.work-item-context-menu"
+                "ms.vss-work-web.work-hub-group"
             ],
             "properties": {
-                "group": "contributed",
+                "name": "Sprint Replay",
                 "uri": "index.html"
             }
         }
