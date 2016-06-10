@@ -12,6 +12,7 @@
     ],
     "files": [
         "scripts/app.ts",
+        "scripts/secret.ts",
         "typings/index.d.ts"
     ]
 }
