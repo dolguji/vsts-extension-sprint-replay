@@ -2,6 +2,7 @@
     grunt.initConfig({
         ts: {
             build: {
+                src: ["scripts/**/*.ts", "scripts/**/*.tsx"],
                 tsconfig: true
             },
             options: {
@@ -15,7 +16,12 @@
                 stderr: true
             },
             publish: {
-                command: "tfx extension publish --service-url http://localhost:8080 --manifest-globs vss-extension.json",
+                command: "tfx extension publish --service-url http://marketplace.visualstudio.com --manifest-globs vss-extension.json",
+                stdout: true,
+                stderr: true
+            },
+            publishDev: {
+                command: "tfx extension publish --service-url https://localhost:8080 --manifest-globs vss-extension.json",
                 stdout: true,
                 stderr: true
             }
@@ -42,7 +48,7 @@
 
     grunt.registerTask("build", ["ts:build", "copy:scripts"]);
     grunt.registerTask("package", ["build", "exec:package"]);
-    grunt.registerTask("publish", ["default", "exec:publish"]);        
+    grunt.registerTask("publish", ["default", "exec:publishDev"]);        
     
     grunt.registerTask("default", ["package"]);
 };
