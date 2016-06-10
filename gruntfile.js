@@ -18,6 +18,11 @@
                 command: "tfx extension publish --service-url https://marketplace.visualstudio.com --manifest-globs vss-extension.json",
                 stdout: true,
                 stderr: true
+            },
+            publishDev: {
+                command: "tfx extension publish --service-url https://localhost:8080 --manifest-globs vss-extension.json",
+                stdout: true,
+                stderr: true
             }
         },
         copy: {
@@ -42,7 +47,7 @@
 
     grunt.registerTask("build", ["ts:build", "copy:scripts"]);
     grunt.registerTask("package", ["build", "exec:package"]);
-    grunt.registerTask("publish", ["default", "exec:publish"]);        
+    grunt.registerTask("publish", ["default", "exec:publishDev"]);        
     
     grunt.registerTask("default", ["package"]);
 };

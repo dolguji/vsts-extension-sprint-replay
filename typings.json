@@ -5,5 +5,8 @@
     "q": "registry:dt/q#0.0.0+20160323171452",
     "tfs": "npm:vss-web-extension-sdk/typings/tfs.d.ts",
     "vss": "npm:vss-web-extension-sdk/typings/vss.d.ts"
+  },
+  "dependencies": {
+    "react": "registry:npm/react#15.0.1+20160601175240"
   }
 }
