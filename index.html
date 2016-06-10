@@ -15,7 +15,8 @@
         });
         
         // Load main entry point for extension
-        VSS.require(["dist/main", "dist/controls"], function () {
+
+        VSS.require(["dist/main", "dist/app", "dist/controls"], function () {
             // Loading succeeded
             VSS.notifyLoadSucceeded();
         });
