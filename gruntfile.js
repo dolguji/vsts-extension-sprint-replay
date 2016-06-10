@@ -40,8 +40,8 @@
 
         watch: {
             scripts: {
-                files: ["scripts/**/*.ts", "scripts/**/*.tsx", "index.html"],
-                tasks: ["publish"],
+                files: ["scripts/**/*.ts", "scripts/**/*.tsx", "index.html", "css/*.css"],
+                tasks: ["build"],
                 options: {
                     spawn: false,
                 },
@@ -60,5 +60,5 @@
     grunt.registerTask("package", ["build", "exec:package"]);
     grunt.registerTask("publish", ["package", "exec:publishDev"]);
 
-    grunt.registerTask("default", ["publish"]);
+    grunt.registerTask("default", ["build"]);
 };

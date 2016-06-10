@@ -2,8 +2,6 @@
     "compilerOptions": {
         "module": "amd",
         "sourceMap": false,
-        "rootDir": "./scripts",
-        "outDir": "./dist",
         "jsx": "react"
     },
     "filesGlob": [
@@ -12,6 +10,7 @@
     ],
     "files": [
         "scripts/app.ts",
+        "scripts/secret.ts",
         "scripts/constants.ts",
         "scripts/contracts.ts",
         "typings/index.d.ts"
