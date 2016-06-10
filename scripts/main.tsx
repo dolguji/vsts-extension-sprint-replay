@@ -15,4 +15,6 @@ let boardComponent: BoardComponent;
 ReactDOM.render(<BoardComponent ref={(i) => boardComponent = i} />, element);
 
 
+
+
 alert("hi");
