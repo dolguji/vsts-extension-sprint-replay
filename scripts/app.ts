@@ -193,12 +193,6 @@ export class DevDataProvider implements IDataProvider{
     }
 }
 
-var dataProvider = new DevDataProvider();
-dataProvider.getBoards().then((value:Work_Contracts.BoardReference[]) => {
-    console.log(value);
-}, (err)=>{console.log(err)});
-
-
 productionRun(new DataProvider());
 function productionRun(dataProvider:IDataProvider) {
     var errorCallback = (err?: any) => {
