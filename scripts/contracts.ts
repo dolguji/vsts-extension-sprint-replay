@@ -6,14 +6,19 @@ export interface IRef {
 /** Data representing the cards / work items */
 export interface ICard {
     id: number;
-    fields: { [referenceName: string]: any };
+    title: string;
+    //fields: { [referenceName: string]: any };
     //getFieldValue?: (referenceName: string) => any;
 }
 
+export interface IColumnData {
+    columnName: string;
+    cards: ICard[];
+}
 /** Data representing the cards on a given date */
 export interface IDay {
     date: Date;
-    cards: ICard[];
+    columnData: IColumnData[];
 }
 
 /** Data representing the board definition */

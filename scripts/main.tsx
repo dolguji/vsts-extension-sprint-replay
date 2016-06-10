@@ -1,5 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import Contracts = require("contracts");
+
 
 let data1 = [
     { name: 'Backlog', cards: [{id: 1, title: "apple"}, {id: 2, title: "banana"}, {id: 3, title: "orange"}, {id: 4, title: "make it better"}, {id: 5, title: "sprint replay"}]},
@@ -21,6 +23,36 @@ let data3 = [
     { name: 'Development',cards: [{id: 8, title: "react foundation"}] },
     { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}, {id: 3, title: "orange"}, {id: 1, title: "apple"},  {id: 4, title: "make it better"}, {id: 7, title: "do card animation"}]},
 ];
+
+let data = {
+    columns: [{ id: 1, name: 'Backlog'}, { id: 2, name: 'Ready'}, { id: 3, name: 'Development'}, { id: 4, name: 'Done'}],
+    lanes: [],
+    days: [ { date: null, columnData: data1}, { date: null, columnData: data2}, { date: null, columnData: data3}] 
+};
+
+
+class ReplayController
+{
+    boardComponent: BoardComponent;
+    data: Contracts.IData;
+    currentIndex: number;
+    
+    contructor(boardComponent: BoardComponent){
+        this.currentIndex = 0;
+        this.boardComponent = boardComponent;
+    }
+    
+    public play(){
+        //this.boardComponent.setBoardData(this.data.Days[0]);
+                
+        // while(currentIndex < data.days.length){
+        //     if(boardComponent.isMounted()){
+        //         boardComponent.setBoardData(data.Days.);
+        //         currentIndex++;
+        //     }
+        // }
+    }
+}
 
 interface IBoardComponenetState {
     columns: any[]
