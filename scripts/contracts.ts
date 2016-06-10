@@ -12,7 +12,7 @@ export interface ICard {
 }
 
 export interface IColumnData {
-    columnName: string;
+    name: string;
     cards: ICard[];
 }
 /** Data representing the cards on a given date */
