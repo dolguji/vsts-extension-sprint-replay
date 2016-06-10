@@ -35,13 +35,31 @@
                     dest: "dist",
                     filter: "isFile"
                 }]
+            },
+            css: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    src: ["node_modules/font-awesome/css/font-awesome.min.css"],
+                    dest: "css",
+                    filter: "isFile"
+                }]
+            },
+            fonts: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    src: ["node_modules/font-awesome/fonts/fontawesome-webfont.woff", "node_modules/font-awesome/fonts/fontawesome-webfont.eot"],
+                    dest: "fonts",
+                    filter: "isFile"
+                }]
             }
         },
 
         watch: {
             scripts: {
                 files: ["scripts/**/*.ts", "scripts/**/*.tsx", "index.html", "css/*.css"],
-                tasks: ["build"],
+                tasks: ["publish"],
                 options: {
                     spawn: false,
                 },
@@ -56,7 +74,7 @@
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
-    grunt.registerTask("build", ["ts:build", "copy:scripts"]);
+    grunt.registerTask("build", ["ts:build", "copy:scripts", "copy:css", "copy:fonts"]);
     grunt.registerTask("package", ["build", "exec:package"]);
     grunt.registerTask("publish", ["package", "exec:publishDev"]);
 

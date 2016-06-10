@@ -161,6 +161,7 @@ class Button extends React.Component<IButtonProps, IButtonState> {
         let iconElement = <i className={`icon fa fa-${icon}`} />;
 
         return <button className={className} onClick={onClick}>
+            {iconElement}
             {children}
         </button>;
     }
