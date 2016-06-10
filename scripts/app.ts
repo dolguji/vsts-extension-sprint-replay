@@ -199,9 +199,8 @@ dataProvider.getBoards().then((value:Work_Contracts.BoardReference[]) => {
 }, (err)=>{console.log(err)});
 
 
-productionRun();
-function productionRun() {
-    var dataProvider = new DataProvider();
+productionRun(new DataProvider());
+function productionRun(dataProvider:IDataProvider) {
     var errorCallback = (err?: any) => {
         console.log(err);
     };
