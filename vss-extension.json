@@ -1,7 +1,12 @@
 {
     "manifestVersion": 1,
     "id": "vsts-extension-sprint-replay",
+<<<<<<< HEAD
     "version": "0.1.6",
+=======
+    "BaseUri": "http://localhost:8520/",
+    "version": "0.1.11",
+>>>>>>> 9eb7e9b12a94cbca933b63a511a1546df8c39d97
     "name": "Sprint Replay",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Replay board",
@@ -13,56 +18,6 @@
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
-        }
-    ],
-    "tags": [
-        "Sample"
-    ],
-    "content": {
-        "details": {
-            "path": "details.md"
-        }
-    },
-    "links": {
-        "home": {
-            "uri": "https://bit.ly"
-        },
-        "getstarted": {
-            "uri": "https://bit.ly"
-        },
-        "learn": {
-            "uri": "https://bit.ly"
-        },
-        "support": {
-            "uri": "https://bit.ly"
-        },
-        "repository": {
-            "uri": "https://bit.ly"
-        },
-        "issues": {
-            "uri": "https://bit.ly"
-        }
-    },
-    "branding": {
-        "color": "rgb(220, 235, 252)",
-        "theme": "light"
-    },
-    "files": [
-        {
-            "path": "img",
-            "addressable": true
-        },
-        {
-            "path": "dist",
-            "addressable": true
-        },
-        {
-            "path": "index.html",
-            "addressable": true
-        },
-        {
-            "path": "scripts",
-            "addressable": true
         }
     ],
     "categories": [

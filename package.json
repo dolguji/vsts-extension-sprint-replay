@@ -16,5 +16,9 @@
   "version": "0.5.0",
   "scripts": {
     "postinstall": "typings install"
+  },
+  "dependencies": {
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0"
   }
 }
