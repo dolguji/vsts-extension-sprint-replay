@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "vsts-extension-sprint-replay",
-    "version": "0.1.2",
+    "version": "0.1.4",
     "name": "Sprint Replay",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Replay board",
@@ -58,6 +58,10 @@
         },
         {
             "path": "index.html",
+            "addressable": true
+        },
+        {
+            "path": "scripts",
             "addressable": true
         }
     ],

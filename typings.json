@@ -3,10 +3,9 @@
     "jquery": "registry:dt/jquery#1.10.0+20160316155526",
     "knockout": "registry:dt/knockout#0.0.0+20160409112158",
     "q": "registry:dt/q#0.0.0+20160323171452",
+    "react": "registry:dt/react#0.14.0+20160602151522",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "tfs": "npm:vss-web-extension-sdk/typings/tfs.d.ts",
     "vss": "npm:vss-web-extension-sdk/typings/vss.d.ts"
-  },
-  "dependencies": {
-    "react": "registry:npm/react#15.0.1+20160601175240"
   }
 }

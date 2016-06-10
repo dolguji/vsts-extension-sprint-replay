@@ -2,6 +2,7 @@
     grunt.initConfig({
         ts: {
             build: {
+                src: ["scripts/**/*.ts", "scripts/**/*.tsx"],
                 tsconfig: true
             },
             options: {

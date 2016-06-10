@@ -3,7 +3,8 @@
         "module": "amd",
         "sourceMap": false,
         "rootDir": "./scripts",
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "jsx": "react"
     },
     "filesGlob": [
         "./scripts/**/*.ts",
