@@ -5,34 +5,56 @@ import * as Contracts from "scripts/contracts"
 interface IMainProps extends React.Props<void> {
     boards: Contracts.IBoardDefinition[];
     intervals: number[];
-    select: (board: Contracts.IBoardDefinition) => void;
-    onCommand?: (action: string) => void;
+    startReplay: (board: Contracts.IBoardDefinition, interval: number) => void;
+    onPlaybackCommand?: (action: string) => void;
 }
 
 interface IMainState {
     board: Contracts.IBoardDefinition;
+    interval: number;
 }
 
 class Main extends React.Component<IMainProps, IMainState> {
     constructor() {
         super();
-        this.state = { board: null };
+        this.state = { board: null, interval: 1 };
+    }
+
+    public componentWillMount() {
+        // Initialize the state with the first values...
+        this.state = { board: this.props.boards[0], interval: this.props.intervals[0] };
     }
 
     public render(): JSX.Element {
 
-        let select = () => {
+        let startReplay = () => {
             if (this.state.board) {
-                this.props.select(this.state.board);
+                this.props.startReplay(this.state.board, this.state.interval);
             }
         };
 
+        let onIntervalChange = (value: number) => {
+            this.setState(Object["assign"]({}, this.state, { interval: value }));
+        };
+
+        let onBoardChange = (boardId: string) => {
+            let board: Contracts.IBoardDefinition = null;
+            for (var index = 0, len = this.props.boards.length; index < len; index++) {
+                var element = this.props.boards[index];
+                if (element.id === boardId) {
+                    board = element;
+                    break;
+                }
+            }
+            this.setState(Object["assign"]({}, this.state, { board: board }));
+        };
+
         return <div>
-            <BoardSelector boards={this.props.boards} />
-            <IntervalSelector intervals={this.props.intervals} />
-            <Button icon="th" onClick={select}>Replay</Button>
+            <BoardSelector boards={this.props.boards} board={this.state.board} onChange={onBoardChange} />
+            <IntervalSelector intervals={this.props.intervals} interval={this.state.interval} onChange={onIntervalChange} />
+            <Button className="replay-button" icon="th" onClick={startReplay}>Replay</Button>
             <hr/>
-            <PlaybackControls onCommand={this.props.onCommand} />
+            <PlaybackControls onCommand={this.props.onPlaybackCommand} />
         </div>;
     }
 }
@@ -40,6 +62,8 @@ class Main extends React.Component<IMainProps, IMainState> {
 
 interface IBoardSelectorProps extends React.Props<void> {
     boards: Contracts.IBoardDefinition[];
+    board: Contracts.IBoardDefinition;
+    onChange: (boardId: string) => void;
 }
 
 interface IBoardSelectorState {
@@ -47,21 +71,48 @@ interface IBoardSelectorState {
 
 class BoardSelector extends React.Component<IBoardSelectorProps, IBoardSelectorState> {
     public render(): JSX.Element {
-        return <div>TODO: this is the backlog selector dropdown</div>;
+        let onSelection = (event) => {
+            this.props.onChange(event.target.value);
+        }
+
+        let selectedBoardId = this.props.board ? this.props.board.id : "";
+
+        return <div className="boards">
+            <select value={selectedBoardId} onChange={onSelection}>
+                { this.props.boards.map((b) => <option key={b.id} value={b.id}>{b.name}</option>) }
+            </select>
+        </div>;
     }
 }
 
 
 interface IIntervalSelectorProps extends React.Props<void> {
     intervals: number[];
+    interval: number;
+    onChange: (value: number) => void;
 }
 
 interface IIntervalSelectorState {
 }
 
 class IntervalSelector extends React.Component<IIntervalSelectorProps, IIntervalSelectorState> {
+
+    private _renderOptions(interval: number): JSX.Element {
+        let displayName = interval === 1 ? interval + " week" : interval + " weeks";
+        return <option key={interval} value={interval}>{displayName}</option>;
+    }
+
     public render(): JSX.Element {
-        return <div>TODO: this is the interval selector dropdown</div>;
+
+        let onSelection = (event) => {
+            this.props.onChange(+event.target.value);
+        }
+
+        return <div className="intervals">
+            <select value={this.props.interval} onChange={onSelection}>
+                { this.props.intervals.map(this._renderOptions) }
+            </select>
+        </div>;
     }
 }
 
@@ -85,7 +136,7 @@ class PlaybackControls extends React.Component<IPlaybackControlsProps, IPlayback
             }
         };
 
-        return <div>
+        return <div className="playback-controls">
             <Button icon="step-backward" onClick={curryClick("step-back") }>Step back</Button>
             <Button icon="play" onClick={curryClick("play") }>Play</Button>
             <Button icon="pause" onClick={curryClick("pause") }>Pause</Button>
@@ -97,7 +148,7 @@ class PlaybackControls extends React.Component<IPlaybackControlsProps, IPlayback
 
 interface IButtonProps extends React.Props<void> {
     icon: string;
-    classNames?: string;
+    className?: string;
     onClick: () => void;
 }
 
@@ -106,10 +157,10 @@ interface IButtonState {
 
 class Button extends React.Component<IButtonProps, IButtonState> {
     public render(): JSX.Element {
-        const { icon, classNames, onClick, children } = this.props;
+        const { icon, className, onClick, children } = this.props;
         let iconElement = <i className={`icon fa fa-${icon}`} />;
 
-        return <button className={classNames} onClick={onClick}>
+        return <button className={className} onClick={onClick}>
             {children}
         </button>;
     }
@@ -119,12 +170,12 @@ class Button extends React.Component<IButtonProps, IButtonState> {
 
 let boards: Contracts.IBoardDefinition[] = [{ id: "epic", name: "Epics" }, { id: "feature", name: "Features" }, { id: "us", name: "User Stories" }];
 let intervals = [1, 2, 3, 4, 5, 6];
-let onCommandClick = (action: string) => {
+let onPlaybackCommand = (action: string) => {
     alert(action + " clicked!");
 };
-let select = (board: Contracts.IBoardDefinition) => {
-    alert(board.name + "selected! - get the data, and update the store");
+let startReplay = (board: Contracts.IBoardDefinition, interval: number) => {
+    alert("Selected: " + board.name + " Interval: " + interval);
 };
 
 let element = document.getElementById("sprint-replay-controls");
-ReactDOM.render(<Main boards={boards} intervals={intervals} onCommand={onCommandClick} select={select} />, element);
+ReactDOM.render(<Main boards={boards} intervals={intervals} onPlaybackCommand={onPlaybackCommand} startReplay={startReplay} />, element);
