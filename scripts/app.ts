@@ -7,6 +7,9 @@ import Work_Contracts = require("TFS/Work/Contracts");
 import TFS_Core_Contracts = require("TFS/Core/Contracts");
 import VSS_WebApi = require("VSS/WebApi/RestClient");
 
+import VSS_Service = require("VSS/Service");
+import VSS_Auth = require("VSS/Authentication/Services");
+
 import {msengToken} from "scripts/secret"
 
 
@@ -91,6 +94,8 @@ export class DataProvider implements IDataProvider{
 
 export class DevDataProvider implements IDataProvider{
 
+    private _webApi = new VSS_WebApi.VssHttpClient("https://mseng.visualstudio.com/");
+
     constructor(){}
     public getMsEngTeamContext(): TFS_Core_Contracts.TeamContext {
         return {
@@ -106,9 +111,17 @@ export class DevDataProvider implements IDataProvider{
         var teamContext = this.getMsEngTeamContext();
         var project = teamContext.projectId || teamContext.project;
         var team = teamContext.teamId || teamContext.team;
-        var webApi = new VSS_WebApi.VssHttpClient("https://mseng.visualstudio.com/");
+        
+        /*  
+        var clientOptions = {} as VSS_WebApi.IVssHttpClientOptions;
+        var workClient = VSS_Service
+            .VssConnection
+            .getConnection()
+            .getHttpClient<RestClient.WorkHttpClient>(RestClient.WorkHttpClient, null, VSS_Auth.getAuthTokenManager(), clientOptions);
 
-        return webApi._beginRequest<Work_Contracts.BoardReference[]>({
+        workClient.getBoards(this.getMsEngTeamContext());
+        */
+        return this._webApi._beginRequest<Work_Contracts.BoardReference[]>({
             httpMethod: "GET",
             area:  "work",
             locationId: "23ad19fc-3b8e-4877-8462-b3f92bc06b40",
@@ -125,7 +138,24 @@ export class DevDataProvider implements IDataProvider{
     }
 
     public getBoard(board: string): IPromise<Work_Contracts.Board> {
-        return null;
+        var teamContext = this.getMsEngTeamContext();
+        var project = teamContext.projectId || teamContext.project;
+        var team = teamContext.teamId || teamContext.team;
+        return this._webApi._beginRequest<Work_Contracts.Board>({
+            httpMethod: "GET",
+            area:  "work",
+            locationId: "23ad19fc-3b8e-4877-8462-b3f92bc06b40",
+            resource: "boards",
+            routeTemplate: "{project}/{team}/_apis/{area}/{resource}/{id}",
+            responseType: Work_Contracts.TypeInfo.Board,
+            routeValues: {
+                project: project,
+                team: team,
+                id: board,
+            },
+            apiVersion: "2.0-preview.1",
+            customHeaders : {'Authorization': 'Basic ' + btoa(":"+msengToken)}
+        })
     }
 
     public queryByWiql(teamContext: TFS_Core_Contracts.TeamContext, workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
