@@ -15,7 +15,7 @@
                 stderr: true
             },
             publish: {
-                command: "tfx extension publish --service-url https://marketplace.visualstudio.com --manifest-globs vss-extension.json",
+                command: "tfx extension publish --service-url http://localhost:8080 --manifest-globs vss-extension.json",
                 stdout: true,
                 stderr: true
             }
