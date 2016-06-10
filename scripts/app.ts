@@ -6,6 +6,9 @@ import RestClient = require("TFS/Work/RestClient");
 import Work_Contracts = require("TFS/Work/Contracts");
 import TFS_Core_Contracts = require("TFS/Core/Contracts");
 
+var boards = getBoards();
+getBoard(boards[0].name);
+
 function getTeamContext(): TFS_Core_Contracts.TeamContext {
     var context = VSS.getWebContext();
     return {
@@ -37,7 +40,7 @@ $( document ).ready(function() {
             url: 'https://mseng.visualstudio.com/defaultcollection/_apis/projects?api-version=1.0',
             dataType: 'json',
             headers: {
-                'Authorization': 'Basic ' + btoa(":v7dqy6m7ebz27nw6sk77qwtuksqu2dclgtwmbulpqgstaiz2edxa")
+                'Authorization': 'Basic ' + btoa(":YOU CREDENTIAL")
             }
         }).done(function( results ) {
             console.log( results.value[0].id + " " + results.value[0].name );
