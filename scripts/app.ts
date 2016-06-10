@@ -8,18 +8,18 @@ import TFS_Core_Contracts = require("TFS/Core/Contracts");
 import VSS_WebApi = require("VSS/WebApi/RestClient");
 
 import {msengToken} from "scripts/secret"
-
+/*
 var dataProvider = new DataProvider();
 dataProvider.getBoards().then((value:Work_Contracts.BoardReference[]) => {
     console.log(value);
 }, (err)=>{console.log(err)});
-
+*/
 export interface IDataProvider{
      getBoard(board: string): IPromise<Work_Contracts.Board>;
      getBoards(): IPromise<Work_Contracts.BoardReference[]>;
 }
 export class DataProvider implements IDataProvider{
-
+    constructor(){}
     private getTeamContext(): TFS_Core_Contracts.TeamContext {
         var context = VSS.getWebContext();
         return {
@@ -43,7 +43,7 @@ export class DataProvider implements IDataProvider{
 
 export class DevDataProvider implements IDataProvider{
 
-
+    constructor(){}
     public getMsEngTeamContext(): TFS_Core_Contracts.TeamContext {
         return {
             projectId: "",
