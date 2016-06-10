@@ -21,7 +21,7 @@
                 stderr: true
             },
             publishDev: {
-                command: "tfx extension publish --service-url https://localhost:8080 --manifest-globs vss-extension.json",
+                command: "tfx extension publish --service-url http://localhost:8080/tfs --manifest-globs vss-extension.json",
                 stdout: true,
                 stderr: true
             }
@@ -29,26 +29,36 @@
         copy: {
             scripts: {
                 files: [{
-                    expand: true, 
-                    flatten: true, 
-                    src: ["node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js"], 
+                    expand: true,
+                    flatten: true,
+                    src: ["node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js"],
                     dest: "dist",
-                    filter: "isFile" 
+                    filter: "isFile"
                 }]
             }
         },
-        
+
+        watch: {
+            scripts: {
+                files: ["scripts/**/*.ts", "scripts/**/*.tsx"],
+                tasks: ["package"],
+                options: {
+                    spawn: false,
+                },
+            },
+        },
         clean: ["scripts/**/*.js", "*.vsix", "dist"]
     });
-    
+
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks("grunt-exec");
     grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-contrib-watch");
 
     grunt.registerTask("build", ["ts:build", "copy:scripts"]);
     grunt.registerTask("package", ["build", "exec:package"]);
-    grunt.registerTask("publish", ["default", "exec:publishDev"]);        
-    
-    grunt.registerTask("default", ["package"]);
+    grunt.registerTask("publish", ["package", "exec:publishDev"]);
+
+    grunt.registerTask("default", ["publish"]);
 };

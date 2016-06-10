@@ -4,7 +4,10 @@
     "BaseUri": "http://localhost:8520/",
     "version": "0.1.11",
     "name": "Sprint Replay",
-    "scopes": [ "vso.work", "vso.work_write" ],
+    "scopes": [
+        "vso.work",
+        "vso.work_write"
+    ],
     "description": "Replay board",
     "publisher": "blueprint",
     "public": false,
@@ -16,11 +19,25 @@
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
+    "files": [
+        {
+            "path": "img",
+            "addressable": true
+        },
+        {
+            "path": "dist",
+            "addressable": true
+        },
+        {
+            "path": "index.html",
+            "addressable": true
+        }
+    ],
     "categories": [
         "Plan and track"
     ],
     "contributions": [
-         {
+        {
             "id": "vsts-extension-sprint-replay",
             "type": "ms.vss-web.hub",
             "description": "",

@@ -12,6 +12,8 @@
     ],
     "files": [
         "scripts/app.ts",
+        "scripts/constants.ts",
+        "scripts/contracts.ts",
         "typings/index.d.ts"
     ]
 }
