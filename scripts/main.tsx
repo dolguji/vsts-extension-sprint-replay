@@ -69,7 +69,7 @@ export class BoardColumn extends React.Component<any, IBoardColumn>  {
         });
 		return (
             <div className="board-column"> 
-                <div>{this.props.column.name}</div>
+                <div className="column-name">{this.props.column.name}</div>
                 <div>{cards}</div>
             </div>
         );
@@ -86,8 +86,9 @@ export class Card extends React.Component<any, ICard>  {
 
     public render() {
 		return (
-            <div> 
-                id is {this.props.card.id} and title is {this.props.card.title}
+            <div className="board-card"> 
+                <div className="card-id">{this.props.card.id} </div>
+                <div className="card-title">{this.props.card.title} </div>
             </div>
         )
 	}
