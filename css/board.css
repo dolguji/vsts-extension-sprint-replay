@@ -1,7 +1,7 @@
 .board-column {
     float: left;
     width: 200px;
-    border: 1px solid;
+    border: 2px solid #9d9db8;
     padding: 6px;
     margin: 3px;
 }
@@ -12,9 +12,19 @@
 }
 
 .board-card {
-    border: 1px solid;
+    border: 1px solid #999;
     width: 165px;
     height: 50px;
     margin: 10px;
+}
+
+.card-id {
+    float: left;
+}
+
+.card-title {
+    float: left;
+    padding: 3px;
+    font-size: medium;
 }
 
