@@ -40,7 +40,7 @@
 
         watch: {
             scripts: {
-                files: ["scripts/**/*.ts", "scripts/**/*.tsx", "index.html"],
+                files: ["scripts/**/*.ts", "scripts/**/*.tsx", "index.html", "css/*.css"],
                 tasks: ["build"],
                 options: {
                     spawn: false,
