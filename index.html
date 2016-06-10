@@ -13,15 +13,14 @@
             usePlatformScripts: true,
             configureModuleLoader: true
         });
-        
-        // Load main entry point for extension
 
-        VSS.require(["dist/main", "dist/app", "dist/controls"], function () {
+        // Load main entry point for extension
+        VSS.require(["scripts/main", "scripts/app", "scripts/controls"], function () {
             // Loading succeeded
             VSS.notifyLoadSucceeded();
         });
     </script>
-    <h1>Hello Sprint Replay! !!!!!</h1>
+    <h1>Hello Sprint Replay!!!!!!</h1>
     <div id="sprint-replay-controls"></div>
     <div id="sprint-replay-container"></div>
 </body>

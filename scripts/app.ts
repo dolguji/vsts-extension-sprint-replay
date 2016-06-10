@@ -6,10 +6,14 @@ import RestClient = require("TFS/Work/RestClient");
 import Work_Contracts = require("TFS/Work/Contracts");
 import TFS_Core_Contracts = require("TFS/Core/Contracts");
 import VSS_WebApi = require("VSS/WebApi/RestClient");
-import {msengToken} from "secret"
+
+import {msengToken} from "scripts/secret"
 
 getBoards();
-getMsEngBoards();
+getMsEngBoards().then((value:Work_Contracts.BoardReference[]) => {
+    console.log(value);
+}, (err)=>{console.log(err)});
+
 
 function getTeamContext(): TFS_Core_Contracts.TeamContext {
     var context = VSS.getWebContext();
@@ -50,12 +54,22 @@ $( document ).ready(function() {
     });
 */
 
+
+function getMsEngTeamContext(): TFS_Core_Contracts.TeamContext {
+    return {
+        projectId: "",
+        project: "VSOnline",
+        teamId: "",
+        team: "Blueprint"
+    }
+}
+
 function getMsEngBoards(): IPromise<Work_Contracts.BoardReference[]>
 {
-    var teamContext = this.getTeamContext();
+    var teamContext = getMsEngTeamContext();
     var project = teamContext.projectId || teamContext.project;
     var team = teamContext.teamId || teamContext.team;
-    var webApi = new VSS_WebApi.VssHttpClient("mseng");
+    var webApi = new VSS_WebApi.VssHttpClient("https://mseng.visualstudio.com/");
 
     return webApi._beginRequest<Work_Contracts.BoardReference[]>({
         httpMethod: "GET",
@@ -68,7 +82,7 @@ function getMsEngBoards(): IPromise<Work_Contracts.BoardReference[]>
             project: project,
             team: team,
         },
-        apiVersion: this.boardsApiVersion,
+        apiVersion: "2.0-preview.1",
         customHeaders : {'Authorization': 'Basic ' + btoa(":"+msengToken)}
     });
 }

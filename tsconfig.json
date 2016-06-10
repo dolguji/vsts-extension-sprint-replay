@@ -2,8 +2,6 @@
     "compilerOptions": {
         "module": "amd",
         "sourceMap": false,
-        "rootDir": "./scripts",
-        "outDir": "./dist",
         "jsx": "react"
     },
     "filesGlob": [

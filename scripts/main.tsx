@@ -9,7 +9,7 @@ export class BoardComponent extends React.Component<any, IBoardComponenetState> 
 	constructor() {
         super();
         this.state = {
-            name: "hyung"
+            name: "patrick"
         };
     }
 	
