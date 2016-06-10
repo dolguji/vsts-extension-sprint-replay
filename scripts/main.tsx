@@ -68,7 +68,7 @@ export class BoardColumn extends React.Component<any, IBoardColumn>  {
             cards.push(<Card card={card} key={card.id}/>);
         });
 		return (
-            <div> 
+            <div className="board-column"> 
                 <div>{this.props.column.name}</div>
                 <div>{cards}</div>
             </div>
