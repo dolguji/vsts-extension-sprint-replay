@@ -21,36 +21,11 @@ export interface IDataProvider{
      queryByWiql(workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult>;
      getPayload(boardName: string): IPromise<TFS_Wit_Contracts.WorkItem[]>;
 }
-
-export class DataProvider implements IDataProvider{
-    private _teamContext: TFS_Core_Contracts.TeamContext;
-    constructor() { 
-        this._teamContext = this.getTeamContext();
-    }
-    
-    public getPayload(boardName: string): IPromise<TFS_Wit_Contracts.WorkItem[]> {
-        var errorCallback = (err?: any) => {
-            console.log(err);
-        };
-    
-        return this.getBoard(boardName).then((board: Work_Contracts.Board) => {
-            var columnNames = this.getInProgressColumnNames(board.columns);
-            var allowedMappings = board.allowedMappings["InProgress"];
-            var workItemTypes = [];
-            for (var prop in allowedMappings) {
-                workItemTypes.push(prop);
-            }
-            var date = "6/10/2016";
-
-            return this.queryByWiql(workItemTypes, columnNames,  date).then((result: TFS_Wit_Contracts.WorkItemQueryResult) => {
-                var ids = result.workItems.map((value, index) => value.id); 
-                return this.getWorkItems(ids);
-            });
-        }, errorCallback);
-    }
-    
-    public queryByWiql(workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
-        var queryBuilder = "SELECT [System.Id],[System.WorkItemType],[System.Title],[System.State] FROM WorkItems WHERE [System.TeamProject] = '" + this._teamContext.project + "'";
+export abstract class BaseDataProvider 
+{
+    protected _teamContext: TFS_Core_Contracts.TeamContext;
+    protected getBoardItems(workItemTypes: string[], columnNames: string[], date: string):any{
+         var queryBuilder = "SELECT [System.Id],[System.WorkItemType],[System.Title],[System.State] FROM WorkItems WHERE [System.TeamProject] = '" + this._teamContext.project + "'";
         
         for (var i=0; i < workItemTypes.length; i++) {
             if (i == 0) {
@@ -76,7 +51,39 @@ export class DataProvider implements IDataProvider{
         var wiql = {
             query: queryBuilder
         }    
+        return wiql;
+    }
+}
+export class DataProvider extends BaseDataProvider implements IDataProvider{
 
+    constructor() { 
+        super();
+        this._teamContext = this.getTeamContext();
+    }
+    
+    public getPayload(boardName: string): IPromise<TFS_Wit_Contracts.WorkItem[]> {
+        var errorCallback = (err?: any) => {
+            console.log(err);
+        };
+    
+        return this.getBoard(boardName).then((board: Work_Contracts.Board) => {
+            var columnNames = this.getInProgressColumnNames(board.columns);
+            var allowedMappings = board.allowedMappings["InProgress"];
+            var workItemTypes = [];
+            for (var prop in allowedMappings) {
+                workItemTypes.push(prop);
+            }
+            var date = "6/10/2016";
+
+            return this.queryByWiql(workItemTypes, columnNames,  date).then((result: TFS_Wit_Contracts.WorkItemQueryResult) => {
+                var ids = result.workItems.map((value, index) => value.id); 
+                return this.getWorkItems(ids);
+            });
+        }, errorCallback);
+    }
+    
+    public queryByWiql(workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
+        var wiql = this.getBoardItems(workItemTypes, columnNames, date);
         var witClient = TFS_Wit_Client.getClient();
         return witClient.queryByWiql(wiql, this._teamContext.projectId, this._teamContext.teamId);
     }
@@ -193,7 +200,7 @@ export class DevDataProvider implements IDataProvider{
     }
 }
 
-productionRun(new DataProvider());
+productionRun(new DevDataProvider());
 function productionRun(dataProvider:IDataProvider) {
     var errorCallback = (err?: any) => {
         console.log(err);
