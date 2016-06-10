@@ -1,12 +1,8 @@
 {
     "manifestVersion": 1,
     "id": "vsts-extension-sprint-replay",
-<<<<<<< HEAD
-    "version": "0.1.6",
-=======
     "BaseUri": "http://localhost:8520/",
     "version": "0.1.11",
->>>>>>> 9eb7e9b12a94cbca933b63a511a1546df8c39d97
     "name": "Sprint Replay",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Replay board",
