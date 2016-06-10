@@ -12,16 +12,12 @@ import {msengToken} from "scripts/secret"
 
 export var defaultFields = ["System.Id","System.WorkItemType","System.Title","System.State","System.AssignedTo"];
 
-/*
-var dataProvider = new DataProvider();
-dataProvider.getBoards().then((value:Work_Contracts.BoardReference[]) => {
-    console.log(value);
-}, (err)=>{console.log(err)});
-*/
 export interface IDataProvider{
      getBoard(board: string): IPromise<Work_Contracts.Board>;
      getBoards(): IPromise<Work_Contracts.BoardReference[]>;
+     queryByWiql(teamContext: TFS_Core_Contracts.TeamContext, workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult>;
 }
+
 export class DataProvider implements IDataProvider{
 
     public queryByWiql(teamContext: TFS_Core_Contracts.TeamContext, workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
@@ -131,4 +127,13 @@ export class DevDataProvider implements IDataProvider{
     public getBoard(board: string): IPromise<Work_Contracts.Board> {
         return null;
     }
+
+    public queryByWiql(teamContext: TFS_Core_Contracts.TeamContext, workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
+        return null;
+    }
 }
+
+var dataProvider = new DevDataProvider();
+dataProvider.getBoards().then((value:Work_Contracts.BoardReference[]) => {
+    console.log(value);
+}, (err)=>{console.log(err)});
