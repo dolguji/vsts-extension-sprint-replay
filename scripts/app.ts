@@ -6,8 +6,7 @@ import RestClient = require("TFS/Work/RestClient");
 import Work_Contracts = require("TFS/Work/Contracts");
 import TFS_Core_Contracts = require("TFS/Core/Contracts");
 
-var boards = getBoards();
-getBoard(boards[0].name);
+getBoards();
 
 function getTeamContext(): TFS_Core_Contracts.TeamContext {
     var context = VSS.getWebContext();
@@ -30,7 +29,7 @@ function getBoard(board: string) {
 function getBoards() {
     var restClient = RestClient.getClient();
     restClient.getBoards(getTeamContext()).then((boardRefs: Work_Contracts.BoardReference[]) => {
-        alert("First boardReference " + boardRefs[0].name);
+        getBoard(boardRefs[0].name);
     });
 }
 
