@@ -1,0 +1,7 @@
+.board-column {
+    float: left;
+    width: 200px;
+    border: 1px solid;
+    padding: 6px;
+    margin: 3px;
+}
