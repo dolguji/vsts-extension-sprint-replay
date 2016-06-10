@@ -1,12 +1,20 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+
 interface IBoardComponenetState {
     name: string
 }
 
 export class BoardComponent extends React.Component<any, IBoardComponenetState> {
+	constructor() {
+        super();
+        this.state = {
+            name: "hyung"
+        };
+    }
+	
 	public render() {
-		return <div> I am a board component </div>;
+		return <div> My name is {this.state.name}</div>;
 	}
 }
 
@@ -14,7 +22,3 @@ let element = document.getElementById("sprint-replay-container");
 let boardComponent: BoardComponent;
 ReactDOM.render(<BoardComponent ref={(i) => boardComponent = i} />, element);
 
-
-
-
-alert("hi");

@@ -13,6 +13,8 @@
     "files": [
         "scripts/app.ts",
         "scripts/secret.ts",
+        "scripts/constants.ts",
+        "scripts/contracts.ts",
         "typings/index.d.ts"
     ]
 }
