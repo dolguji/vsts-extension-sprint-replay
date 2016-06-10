@@ -19,6 +19,7 @@
     "postinstall": "typings install"
   },
   "dependencies": {
+    "font-awesome": "^4.6.3",
     "react": "^15.1.0",
     "react-dom": "^15.1.0"
   }
