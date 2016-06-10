@@ -95,10 +95,10 @@ export class Card extends React.Component<any, ICard>  {
 }
 
 let data = [
-    { name: 'Backlog', cards: [{id: 1, title: "card1"}, {id: 2, title: "card2"}]},
-    { name: 'Ready', cards: [{id: 3, title: "card3"}, {id: 4, title: "card4"}] },
-    { name: 'Development',cards: [{id: 5, title: "card5"}] },
-    { name: 'Done', cards: [{id: 6, title: "card6"}]},
+    { name: 'Backlog', cards: [{id: 1, title: "apple"}, {id: 2, title: "banana"}, {id: 3, title: "orange"}, {id: 4, title: "make it better"}, {id: 5, title: "sprint replay"}]},
+    { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 7, title: "do card animation"}] },
+    { name: 'Development',cards: [{id: 8, title: "react foundation"}] },
+    { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}]},
 ];
 
 let element = document.getElementById("sprint-replay-container");
