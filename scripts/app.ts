@@ -219,7 +219,7 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
                 team: team,
             },
             queryParams: queryValues,
-            apiVersion: "2.0-preview.1",
+            apiVersion: "1.0",
             data: wiql
         });
     }
@@ -261,7 +261,7 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
             routeTemplate: "_apis/{area}/{resource}/{id}",
             responseIsCollection: true,
             queryParams: queryValues,
-            apiVersion: "2.0-preview.1"
+            apiVersion: "1.0"
         });
     }   
 }
