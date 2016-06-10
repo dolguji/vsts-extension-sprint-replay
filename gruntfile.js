@@ -40,8 +40,8 @@
 
         watch: {
             scripts: {
-                files: ["scripts/**/*.ts", "scripts/**/*.tsx"],
-                tasks: ["package"],
+                files: ["scripts/**/*.ts", "scripts/**/*.tsx", "index.html"],
+                tasks: ["publish"],
                 options: {
                     spawn: false,
                 },
