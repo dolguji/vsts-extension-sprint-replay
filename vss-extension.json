@@ -21,11 +21,23 @@
     ],
     "files": [
         {
+            "path": "css",
+            "addressable": true
+        },
+        {
             "path": "img",
             "addressable": true
         },
         {
+            "path": "fonts",
+            "addressable": true
+        },
+        {
             "path": "dist",
+            "addressable": true
+        },
+        {
+            "path": "scripts",
             "addressable": true
         },
         {

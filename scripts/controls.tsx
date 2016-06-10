@@ -1,10 +1,44 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as Contracts from "scripts/contracts"
+import {BoardComponent} from "scripts/main"
+
+//////////////////////////////////////////////////////////////////////////
+let data1 = [
+    { name: 'Backlog', cards: [{id: 1, title: "apple"}, {id: 2, title: "banana"}, {id: 3, title: "orange"}, {id: 4, title: "make it better"}, {id: 5, title: "sprint replay"}]},
+    { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 7, title: "do card animation"}] },
+    { name: 'Development',cards: [{id: 8, title: "react foundation"}] },
+    { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}]},
+];
+
+let data2 = [
+    { name: 'Backlog', cards: [{id: 1, title: "apple"},  {id: 4, title: "make it better"}, {id: 5, title: "sprint replay"}]},
+    { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 2, title: "banana"} ] },
+    { name: 'Development',cards: [{id: 8, title: "react foundation"}, {id: 7, title: "do card animation"}] },
+    { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}, {id: 3, title: "orange"}]},
+];
+
+let data3 = [
+    { name: 'Backlog', cards: [ {id: 5, title: "sprint replay"}]},
+    { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 2, title: "banana"} ] },
+    { name: 'Development',cards: [{id: 8, title: "react foundation"}] },
+    { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}, {id: 3, title: "orange"}, {id: 1, title: "apple"},  {id: 4, title: "make it better"}, {id: 7, title: "do card animation"}]},
+];
+
+let data : Contracts.IData = {
+    id: "board id",
+    name: "User Story",
+    columns: [{ id: "1", name: 'Backlog'}, { id: "2", name: 'Ready'}, { id: "3", name: 'Development'}, { id: "4", name: 'Done'}],
+    lanes: null,
+    days: [ { date: null, columnData: data1}, { date: null, columnData: data2}, { date: null, columnData: data3}] 
+};
+
+//////////////////////////////////////////////////////////////////////////
 
 interface IMainProps extends React.Props<void> {
     boards: Contracts.IBoardDefinition[];
     intervals: number[];
+    boardData: Contracts.IData;
     startReplay: (board: Contracts.IBoardDefinition, interval: number) => void;
     onPlaybackCommand?: (action: string) => void;
 }
@@ -12,17 +46,22 @@ interface IMainProps extends React.Props<void> {
 interface IMainState {
     board: Contracts.IBoardDefinition;
     interval: number;
+    boardData: Contracts.IData;
 }
 
 class Main extends React.Component<IMainProps, IMainState> {
     constructor() {
         super();
-        this.state = { board: null, interval: 1 };
+        this.state = { board: null, interval: 1, boardData: null };
     }
 
     public componentWillMount() {
         // Initialize the state with the first values...
-        this.state = { board: this.props.boards[0], interval: this.props.intervals[0] };
+        this.state = { 
+            board: this.props.boards[0], 
+            interval: this.props.intervals[0],
+            boardData: this.props.boardData
+        };
     }
 
     public render(): JSX.Element {
@@ -55,6 +94,7 @@ class Main extends React.Component<IMainProps, IMainState> {
             <Button className="replay-button" icon="th" onClick={startReplay}>Replay</Button>
             <hr/>
             <PlaybackControls onCommand={this.props.onPlaybackCommand} />
+            <BoardComponent columns={this.state.boardData.days[0]} />
         </div>;
     }
 }
@@ -145,7 +185,6 @@ class PlaybackControls extends React.Component<IPlaybackControlsProps, IPlayback
     }
 }
 
-
 interface IButtonProps extends React.Props<void> {
     icon: string;
     className?: string;
@@ -161,12 +200,11 @@ class Button extends React.Component<IButtonProps, IButtonState> {
         let iconElement = <i className={`icon fa fa-${icon}`} />;
 
         return <button className={className} onClick={onClick}>
+            {iconElement}
             {children}
         </button>;
     }
 }
-
-
 
 let boards: Contracts.IBoardDefinition[] = [{ id: "epic", name: "Epics" }, { id: "feature", name: "Features" }, { id: "us", name: "User Stories" }];
 let intervals = [1, 2, 3, 4, 5, 6];
@@ -178,4 +216,4 @@ let startReplay = (board: Contracts.IBoardDefinition, interval: number) => {
 };
 
 let element = document.getElementById("sprint-replay-controls");
-ReactDOM.render(<Main boards={boards} intervals={intervals} onPlaybackCommand={onPlaybackCommand} startReplay={startReplay} />, element);
+ReactDOM.render(<Main boards={boards} boardData={data} intervals={intervals} onPlaybackCommand={onPlaybackCommand} startReplay={startReplay} />, element);

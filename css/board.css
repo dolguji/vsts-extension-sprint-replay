@@ -28,3 +28,10 @@
     font-size: medium;
 }
 
+
+
+
+.sprint-replay-controls .boards, .sprint-replay-controls .intervals, .sprint-replay-controls .replay-button {
+  display: inline-block;
+}
+
