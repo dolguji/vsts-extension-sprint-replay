@@ -15,11 +15,14 @@
         });
         
         // Load main entry point for extension
-        VSS.require(["dist/main", "dist/app"], function () {
+
+        VSS.require(["dist/main", "dist/app", "dist/controls"], function () {
             // Loading succeeded
             VSS.notifyLoadSucceeded();
         });
     </script>
+    
+    <div id="sprint-replay-controls"></div>
     <div id="sprint-replay-container"></div>
 </body>
 </html>
