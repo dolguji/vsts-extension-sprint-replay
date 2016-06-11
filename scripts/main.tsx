@@ -104,7 +104,7 @@ export class Card extends React.Component<any, ICard>  {
     public render() {
 		return (
             <div className="board-card"> 
-                <div className="card-id">{this.props.card.id} </div>
+                <div className="card-color"></div>
                 <div className="card-title">{this.props.card.title} </div>
             </div>
         )

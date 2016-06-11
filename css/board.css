@@ -18,18 +18,17 @@
     margin: 10px;
 }
 
-.card-id {
+.card-color {
     float: left;
+    margin-right: 6px;
+    width: 8px;
+    height: 100%;
+    background-color: dodgerblue;
 }
 
 .card-title {
-    float: left;
-    padding: 3px;
     font-size: medium;
 }
-
-
-
 
 .sprint-replay-controls .boards, .sprint-replay-controls .intervals, .sprint-replay-controls .replay-button {
   display: inline-block;
