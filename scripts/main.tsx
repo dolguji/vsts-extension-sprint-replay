@@ -1,35 +1,35 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import Contracts = require("contracts");
+import * as Contracts from "scripts/contracts"
 
-interface IBoardComponenetState {
-    columns: any[]
+interface IBoardData extends React.Props<void> {
+    currentData: Contracts.IDay;
 }
 
-export class BoardComponent extends React.Component<any, IBoardComponenetState> {
+export class BoardComponent extends React.Component<any, IBoardData> {
 	constructor() {
         super();
     }
 	
     public componentWillMount() {
-        this.state = { columns: this.props.columns };
+        this.state = { currentData: this.props.boardData.days[0] };
     }
     
     public componentDidMount() {
-        //setTimeout(() => { this.setBoardData(data2); }, 2500);
-        //setTimeout(() => { this.setBoardData(data3); }, 5000);
+        setTimeout(() => { this.setBoardData(this.props.boardData.days[1]); }, 2500);
+        setTimeout(() => { this.setBoardData(this.props.boardData.days[2]); }, 5000);
     }
     
-    public setBoardData(data : any){
+    public setBoardData(currentData : Contracts.IDay){
         this.setState({
-            columns: data
+            currentData: currentData
         });
     }
     
 	public render() {
         return (
             <div>
-                <BoardColumnTable columns={this.state.columns} />
+                <BoardColumnTable columns={this.state.currentData} />
             </div>
         );
 	}

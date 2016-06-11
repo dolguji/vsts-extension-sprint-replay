@@ -3,7 +3,12 @@ import * as ReactDOM from "react-dom";
 import * as Contracts from "scripts/contracts"
 import {BoardComponent} from "scripts/main"
 
-//////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// mocked data
+
+let boards: Contracts.IBoardDefinition[] = [{ id: "epic", name: "Epics" }, { id: "feature", name: "Features" }, { id: "us", name: "User Stories" }];
+let intervals = [1, 2, 3, 4, 5, 6];
+
 let data1 = [
     { name: 'Backlog', cards: [{id: 1, title: "apple"}, {id: 2, title: "banana"}, {id: 3, title: "orange"}, {id: 4, title: "make it better"}, {id: 5, title: "sprint replay"}]},
     { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 7, title: "do card animation"}] },
@@ -33,7 +38,7 @@ let data : Contracts.IData = {
     days: [ { date: null, columnData: data1}, { date: null, columnData: data2}, { date: null, columnData: data3}] 
 };
 
-//////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 interface IMainProps extends React.Props<void> {
     boards: Contracts.IBoardDefinition[];
@@ -46,13 +51,12 @@ interface IMainProps extends React.Props<void> {
 interface IMainState {
     board: Contracts.IBoardDefinition;
     interval: number;
-    boardData: Contracts.IData;
 }
 
 class Main extends React.Component<IMainProps, IMainState> {
     constructor() {
         super();
-        this.state = { board: null, interval: 1, boardData: null };
+        this.state = { board: null, interval: 1 };
     }
 
     public componentWillMount() {
@@ -60,10 +64,9 @@ class Main extends React.Component<IMainProps, IMainState> {
         this.state = { 
             board: this.props.boards[0], 
             interval: this.props.intervals[0],
-            boardData: this.props.boardData
         };
     }
-
+    
     public render(): JSX.Element {
 
         let startReplay = () => {
@@ -94,7 +97,7 @@ class Main extends React.Component<IMainProps, IMainState> {
             <Button className="replay-button" icon="th" onClick={startReplay}>Replay</Button>
             <hr/>
             <PlaybackControls onCommand={this.props.onPlaybackCommand} />
-            <BoardComponent columns={this.state.boardData.days[0]} />
+            <BoardComponent boardData={this.props.boardData} />
         </div>;
     }
 }
@@ -206,8 +209,6 @@ class Button extends React.Component<IButtonProps, IButtonState> {
     }
 }
 
-let boards: Contracts.IBoardDefinition[] = [{ id: "epic", name: "Epics" }, { id: "feature", name: "Features" }, { id: "us", name: "User Stories" }];
-let intervals = [1, 2, 3, 4, 5, 6];
 let onPlaybackCommand = (action: string) => {
     alert(action + " clicked!");
 };
