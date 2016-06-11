@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import * as Contracts from "scripts/contracts"
 
 interface IBoardData extends React.Props<void> {
-    currentData: Contracts.IDay;
+    currentIndex: number;
 }
 
 export class BoardComponent extends React.Component<any, IBoardData> {
@@ -12,24 +12,40 @@ export class BoardComponent extends React.Component<any, IBoardData> {
     }
 	
     public componentWillMount() {
-        this.state = { currentData: this.props.boardData.days[0] };
+        this.state = { currentIndex: 0 };
     }
     
     public componentDidMount() {
-        setTimeout(() => { this.setBoardData(this.props.boardData.days[1]); }, 2500);
-        setTimeout(() => { this.setBoardData(this.props.boardData.days[2]); }, 5000);
+        console.log("componentDidMount " + this.state.currentIndex);
+        this.play();
     }
     
-    public setBoardData(currentData : Contracts.IDay){
+    public componentDidUpdate() {
+        console.log("componentDidUpdate " + this.state.currentIndex);
+        this.play();
+    }
+    
+    public play(){
+        setTimeout(() => {
+            if (this.state.currentIndex < this.props.boardData.days.length - 1) {
+                var index = this.state.currentIndex;
+                index++;
+                this.setBoardData(index, this.props.boardData.days[index]);
+                console.log("playing next day " + this.state.currentIndex);
+            }
+        }, 1000);
+    }
+    
+    public setBoardData(currentIndex:number, currentData : Contracts.IDay){
         this.setState({
-            currentData: currentData
+            currentIndex: currentIndex,
         });
     }
     
 	public render() {
         return (
-            <div>
-                <BoardColumnTable columns={this.state.currentData} />
+            <div className='board-container'>
+                <BoardColumnTable columns={this.props.boardData.days[this.state.currentIndex]} />
             </div>
         );
 	}
@@ -88,12 +104,9 @@ export class Card extends React.Component<any, ICard>  {
     public render() {
 		return (
             <div className="board-card"> 
-                <div className="card-id">{this.props.card.id} </div>
+                <div className="card-color"></div>
                 <div className="card-title">{this.props.card.title} </div>
             </div>
         )
 	}
 }
-
-//let element = document.getElementById("sprint-replay-container");
-//ReactDOM.render(<BoardComponent columns = { data1 } />, element);
