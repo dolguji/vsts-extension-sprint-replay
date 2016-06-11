@@ -13,18 +13,19 @@ import VSS_Auth = require("VSS/Authentication/Services");
 import {msengToken} from "scripts/secret"
 
 
-export var defaultFields = ["System.Id","System.WorkItemType","System.Title","System.State","System.AssignedTo"];
+export var defaultFields = ["System.Id","System.WorkItemType","System.Title","System.AssignedTo","System.BoardColumn"];
 
 export interface IDataProvider{
      getBoard(board: string): IPromise<Work_Contracts.Board>;
      getBoards(): IPromise<Work_Contracts.BoardReference[]>;
-     queryByWiql(workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult>;
+     queryByWiql(workItemTypes: string[], columnNames: string[], date: string, boardColumnFieldName: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult>;
      getPayload(boardName: string): IPromise<TFS_Wit_Contracts.WorkItem[]>;
 }
+
 export abstract class BaseDataProvider 
 {
     protected _teamContext: TFS_Core_Contracts.TeamContext;
-    protected getBoardItems(workItemTypes: string[], columnNames: string[], date: string):any{
+    protected getBoardItems(workItemTypes: string[], columnNames: string[], date: string, boardColumnFieldName: string):any{
          var queryBuilder = "SELECT [System.Id],[System.WorkItemType],[System.Title],[System.State] FROM WorkItems WHERE [System.TeamProject] = '" + this._teamContext.project + "'";
         
         for (var i=0; i < workItemTypes.length; i++) {
@@ -35,17 +36,16 @@ export abstract class BaseDataProvider
                 queryBuilder += " OR [System.WorkItemType] = '" + workItemTypes[i] + "'";
             }
         }
-        
-        for (var i=0; i < columnNames.length; i++) {
-            if (i == 0) {
-                queryBuilder += " AND [System.BoardColumn] = '" + columnNames[i] + "'";
-            }
-            else {
-                queryBuilder += " OR [System.BoardColumn] = '" + columnNames[i] + "'";
-            }
-        }
+        // for (var i=0; i < columnNames.length; i++) {
+        //     if (i == 0) {
+        //         queryBuilder += " AND [System.BoardColumn] = '" + columnNames[i] + "'";
+        //     }
+        //     else {
+        //         queryBuilder += " OR [System.BoardColumn] = '" + columnNames[i] + "'";
+        //     }
+        // }
         queryBuilder += ")";
-        
+        queryBuilder += " AND [" + boardColumnFieldName + "] <> ''";
         queryBuilder += " AsOf '" + date + "' ORDER BY [System.ChangedDate] DESC";
         
         var wiql = {
@@ -54,6 +54,7 @@ export abstract class BaseDataProvider
         return wiql;
     }
 }
+
 export class DataProvider extends BaseDataProvider implements IDataProvider{
 
     constructor() { 
@@ -61,34 +62,48 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
         this._teamContext = this.getTeamContext();
     }
     
-    public getPayload(boardName: string): IPromise<TFS_Wit_Contracts.WorkItem[]> {
+    public getPayload(boardName: string, numberDaysFromToday?: number): IPromise<TFS_Wit_Contracts.WorkItem[]> {
         var errorCallback = (err?: any) => {
             console.log(err);
         };
     
         return this.getBoard(boardName).then((board: Work_Contracts.Board) => {
             var columnNames = this.getInProgressColumnNames(board.columns);
-            var allowedMappings = board.allowedMappings["InProgress"];
+            var allowedMappings = board.allowedMappings["Incoming"];
             var workItemTypes = [];
             for (var prop in allowedMappings) {
                 workItemTypes.push(prop);
             }
-            var date = "6/10/2016";
-
-            return this.queryByWiql(workItemTypes, columnNames,  date).then((result: TFS_Wit_Contracts.WorkItemQueryResult) => {
-                var ids = result.workItems.map((value, index) => value.id); 
-                return this.getWorkItems(ids);
-            });
+            var boardColumnFieldName = board.fields.columnField.referenceName;
+            defaultFields.push(boardColumnFieldName);
+            
+            //var date = "6/10/2016";
+            var promises = [];
+            numberDaysFromToday = 2 - 1; // 2 days
+            while (numberDaysFromToday >= 0) {
+                var date = this.getPreviousDate(numberDaysFromToday);
+                promises.push(this.getWorkItemsByDay(workItemTypes, columnNames, date, boardColumnFieldName));
+                numberDaysFromToday--;
+            }
+            return Q.allSettled(promises).then(promiseStates => promiseStates.map(state => state.value));
         }, errorCallback);
     }
     
-    public queryByWiql(workItemTypes: string[], columnNames: string[], date: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
-        var wiql = this.getBoardItems(workItemTypes, columnNames, date);
+    public getWorkItemsByDay(workItemTypes: string[], columnNames: string[], date: Date, boardColumnFieldName: string): IPromise<TFS_Wit_Contracts.WorkItem[]> {
+        var dateString = this.getDate(date);
+        return this.queryByWiql(workItemTypes, columnNames, dateString, boardColumnFieldName).then((result: TFS_Wit_Contracts.WorkItemQueryResult) => {
+            var ids = result.workItems.map((value, index) => value.id);
+            return this.getWorkItems(ids, defaultFields, date);
+        });
+    }
+    
+    public queryByWiql(workItemTypes: string[], columnNames: string[], date: string, boardColumnFieldName?: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
+        var wiql = this.getBoardItems(workItemTypes, columnNames, date, boardColumnFieldName);
         var witClient = TFS_Wit_Client.getClient();
         return witClient.queryByWiql(wiql, this._teamContext.projectId, this._teamContext.teamId);
     }
     
-    public getWorkItems(workItemIds: number[], asOf?: Date): IPromise<TFS_Wit_Contracts.WorkItem[]> {
+    public getWorkItems(workItemIds: number[], fields?: string[], asOf?: Date): IPromise<TFS_Wit_Contracts.WorkItem[]> {
         var witClient = TFS_Wit_Client.getClient();
         return witClient.getWorkItems(workItemIds, defaultFields, asOf);
     }   
@@ -122,6 +137,20 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
             }
         }
         return columnNames;
+    }
+    
+    private getDate(dateObj: Date): string {
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
+        var newdate = year + "/" + month + "/" + day;
+        return newdate;
+    }
+    
+    private getPreviousDate(days: number): Date {
+        var dateObj = new Date();
+        dateObj.setDate(dateObj.getDate() - days);
+        return dateObj;
     }
 }
 
@@ -200,7 +229,7 @@ export class DevDataProvider implements IDataProvider{
     }
 }
 
-productionRun(new DevDataProvider());
+productionRun(new DataProvider());
 function productionRun(dataProvider:IDataProvider) {
     var errorCallback = (err?: any) => {
         console.log(err);
