@@ -11,21 +11,21 @@ let intervals = [1, 2, 3, 4, 5, 6];
 
 let data1 = [
     { name: 'Backlog', cards: [{id: 1, title: "apple"}, {id: 2, title: "banana"}, {id: 3, title: "orange"}, {id: 4, title: "make it better"}, {id: 5, title: "sprint replay"}]},
-    { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 7, title: "do card animation"}] },
+    { name: 'Ready', cards: [{id: 6, title: "DTS: TFS2015: TFS add-in from TFS office integration tool download causing Excel 2016 multi-sheet opened crashes"}, {id: 7, title: "do card animation"}] },
     { name: 'Development',cards: [{id: 8, title: "react foundation"}] },
     { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}]},
 ];
 
 let data2 = [
     { name: 'Backlog', cards: [{id: 1, title: "apple"},  {id: 4, title: "make it better"}, {id: 5, title: "sprint replay"}]},
-    { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 2, title: "banana"} ] },
-    { name: 'Development',cards: [{id: 8, title: "react foundation"}, {id: 7, title: "do card animation"}] },
+    { name: 'Ready', cards: [ {id: 2, title: "banana"} ] },
+    { name: 'Development',cards: [{id: 6, title: "DTS: TFS2015: TFS add-in from TFS office integration tool download causing Excel 2016 multi-sheet opened crashes"}, {id: 8, title: "react foundation"}, {id: 7, title: "do card animation"}] },
     { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}, {id: 3, title: "orange"}]},
 ];
 
 let data3 = [
     { name: 'Backlog', cards: [ {id: 5, title: "sprint replay"}]},
-    { name: 'Ready', cards: [{id: 6, title: "fetch history data"}, {id: 2, title: "banana"} ] },
+    { name: 'Ready', cards: [{id: 6, title: "DTS: TFS2015: TFS add-in from TFS office integration tool download causing Excel 2016 multi-sheet opened crashes"}, {id: 2, title: "banana"} ] },
     { name: 'Development',cards: [{id: 8, title: "react foundation"}] },
     { name: 'Done', cards: [{id: 9, title: "wendy is amazing"}, {id: 10, title: "hyung is also amazing"}, {id: 3, title: "orange"}, {id: 1, title: "apple"},  {id: 4, title: "make it better"}, {id: 7, title: "do card animation"}]},
 ];

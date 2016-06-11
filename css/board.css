@@ -1,7 +1,7 @@
 .board-column {
     float: left;
     width: 200px;
-    border: 2px solid #9d9db8;
+    border: 1px solid #b0b0c7;
     padding: 6px;
     margin: 3px;
 }
@@ -16,6 +16,7 @@
     width: 165px;
     height: 50px;
     margin: 10px;
+    overflow: hidden;
 }
 
 .card-color {
@@ -27,10 +28,20 @@
 }
 
 .card-title {
-    font-size: medium;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
+
+.boards {
+    margin: 10px;
 }
 
 .sprint-replay-controls .boards, .sprint-replay-controls .intervals, .sprint-replay-controls .replay-button {
   display: inline-block;
+  margin: 10px;
 }
 
+.board-container {
+    padding: 5px;
+}

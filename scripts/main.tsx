@@ -44,7 +44,7 @@ export class BoardComponent extends React.Component<any, IBoardData> {
     
 	public render() {
         return (
-            <div>
+            <div className='board-container'>
                 <BoardColumnTable columns={this.props.boardData.days[this.state.currentIndex]} />
             </div>
         );
@@ -110,6 +110,3 @@ export class Card extends React.Component<any, ICard>  {
         )
 	}
 }
-
-//let element = document.getElementById("sprint-replay-container");
-//ReactDOM.render(<BoardComponent columns = { data1 } />, element);
