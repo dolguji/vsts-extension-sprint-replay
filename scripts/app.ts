@@ -79,8 +79,8 @@ export class DataService {
                 result.columns.push(columnDef);
             }
             
-            for (var i=0; i < board.rows.length; i++) {
-                var row = board.rows[i];
+            for (var j=0; j < board.rows.length; j++) {
+                var row = board.rows[j];
                 var columnDef = {
                     id: row.id,
                     name: row.name
@@ -102,48 +102,51 @@ export class DataService {
                 promises.push(this.getWorkItemsByDay(workItemTypes, [], date, boardColumnFieldName));
                 numberDaysFromToday--;
             }
-            //  => promiseStates.map(state => state.value)
+            
             Q.allSettled<IWorkItem[]>(promises).then((promiseStates: Q.PromiseState<IWorkItem[]>[]) => {
                 for (var i=0; i < promiseStates.length; i++) {
                     var promiseState = promiseStates[i];
                     var state = promiseState.state;
                     var workItems: IWorkItem[] = promiseState.value;
-                    var date = workItems[0].asOf;
-                    
-                    var columnData: Client_Contracts.IColumnData[] = []
-                    for (var i=0; i < result.columns.length; i++) {
-                        var column = result.columns[i];
-                        var itemsForColumn = workItems.filter((value, index) => value.fields["System.BoardColumn"] == column);
-                        var cards: Client_Contracts.ICard[] = [];
-                        for (var i=0; i < itemsForColumn.length; i++) {
-                            var item = itemsForColumn[i];
-                            var card = {
-                                id: item.id,
-                                title: item.fields["System.Title"],
-                                fields: item.fields
-                            }
-                            cards.push(card);
-                        }
-                        
-                        var columnDate: Client_Contracts.IColumnData = {
-                            name: column.name,
-                            cards: cards,
-                        };
-                        
-                        columnData.push(columnDate);
-                    }
-                    
-                    var dayObject: Client_Contracts.IDay = {
-                        date: date,
-                        columnData: columnData
-                    };  
-                    result.days.push(dayObject);                  
+                    this.convertWorkItemsToIDayPerColumn(result, workItems);               
                 }
                 defer.resolve(result);
             });
         }, errorCallback);
         
         return defer.promise; 
+    }
+    
+    private convertWorkItemsToIDayPerColumn(result: Client_Contracts.IData, workItems: IWorkItem[]) {
+        var date = workItems[0].asOf;
+        var columnData: Client_Contracts.IColumnData[] = []
+        for (var i=0; i < result.columns.length; i++) {
+            var column = result.columns[i];
+            var itemsForColumn = workItems.filter((value, index) => value.fields["System.BoardColumn"] == column.name);
+            var cards: Client_Contracts.ICard[] = [];
+            for (var j=0; j < itemsForColumn.length; j++) {
+                var item = itemsForColumn[j];
+                var card = {
+                    id: item.id,
+                    title: item.fields["System.Title"],
+                    fields: item.fields
+                }
+                cards.push(card);
+            }
+            
+            var columnDate: Client_Contracts.IColumnData = {
+                name: column.name,
+                cards: cards,
+            };
+            
+            columnData.push(columnDate);
+        }
+        
+        var dateData: Client_Contracts.IDay = {
+            date: date,
+            columnData: columnData
+        };  
+        result.days.push(dateData);
     }
     
     private getWorkItemsByDay(workItemTypes: string[], columnNames: string[], date: Date, boardColumnFieldName: string): IPromise<IWorkItem[]> {
@@ -422,17 +425,17 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
 // }
 
 
-// serviceTest(new DataService(new DataProvider()));
-// function serviceTest(dataService: IDataService) {
-//     var errorCallback = (err?: any) => {
-//         console.log(err);
-//     };
+serviceTest(new DataService(new DataProvider()));
+function serviceTest(dataService: IDataService) {
+    var errorCallback = (err?: any) => {
+        console.log(err);
+    };
     
-//     dataService.getBoards().then((value:Client_Contracts.IBoards) => {
-//         var boardName = value.boards[0].name;
-//         var days = 1;
-//         dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
-//             data;
-//         }, errorCallback);
-//     }, errorCallback);
-// }
+    dataService.getBoards().then((value:Client_Contracts.IBoards) => {
+        var boardName = value.boards[0].name;
+        var days = 1;
+        dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
+            data;
+        }, errorCallback);
+    }, errorCallback);
+}
