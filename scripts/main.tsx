@@ -43,11 +43,16 @@ export class BoardComponent extends React.Component<any, IBoardData> {
     }
     
 	public render() {
-        return (
-            <div className='board-container'>
-                <BoardColumnTable columns={this.props.boardData.days[this.state.currentIndex]} />
-            </div>
-        );
+        if (this.props.boardData){
+            return (
+                <div className='board-container'>
+                        <BoardColumnTable columns={this.props.boardData.days[this.state.currentIndex]} />
+                </div>
+            );
+        }
+        else {
+            return (<div className='board-container' />);
+        }
 	}
 }
 

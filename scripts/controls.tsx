@@ -43,7 +43,6 @@ let data : Contracts.IData = {
 interface IMainProps extends React.Props<void> {
     boards: Contracts.IBoardDefinition[];
     intervals: number[];
-    boardData: Contracts.IData;
     startReplay: (board: Contracts.IBoardDefinition, interval: number) => void;
     onPlaybackCommand?: (action: string) => void;
 }
@@ -51,12 +50,13 @@ interface IMainProps extends React.Props<void> {
 interface IMainState {
     board: Contracts.IBoardDefinition;
     interval: number;
+    boardData: Contracts.IData;
 }
 
 class Main extends React.Component<IMainProps, IMainState> {
     constructor() {
         super();
-        this.state = { board: null, interval: 1 };
+        this.state = { board: null, interval: 1, boardData: null };
     }
 
     public componentWillMount() {
@@ -64,16 +64,29 @@ class Main extends React.Component<IMainProps, IMainState> {
         this.state = { 
             board: this.props.boards[0], 
             interval: this.props.intervals[0],
+            boardData: null
         };
+    }
+    
+    public startReplay(){
+        // use dataprovider to fetch data
+        var result = data;
+        
+        // set state
+        this.setState({ 
+            board: this.props.boards[0], 
+            interval: this.props.intervals[0],
+            boardData: result
+        });
     }
     
     public render(): JSX.Element {
 
-        let startReplay = () => {
-            if (this.state.board) {
-                this.props.startReplay(this.state.board, this.state.interval);
-            }
-        };
+        // let startReplay = () => {
+        //     if (this.state.board) {
+        //         this.props.startReplay(this.state.board, this.state.interval);
+        //     }
+        // };
 
         let onIntervalChange = (value: number) => {
             this.setState(Object["assign"]({}, this.state, { interval: value }));
@@ -94,10 +107,10 @@ class Main extends React.Component<IMainProps, IMainState> {
         return <div>
             <BoardSelector boards={this.props.boards} board={this.state.board} onChange={onBoardChange} />
             <IntervalSelector intervals={this.props.intervals} interval={this.state.interval} onChange={onIntervalChange} />
-            <Button className="replay-button" icon="th" onClick={startReplay}>Replay</Button>
+            <Button className="replay-button" icon="th" onClick={() => {this.startReplay();}}>Replay</Button>
             <hr/>
             <PlaybackControls onCommand={this.props.onPlaybackCommand} />
-            <BoardComponent boardData={this.props.boardData} />
+            <BoardComponent boardData={this.state.boardData} />
         </div>;
     }
 }
@@ -214,7 +227,9 @@ let onPlaybackCommand = (action: string) => {
 };
 let startReplay = (board: Contracts.IBoardDefinition, interval: number) => {
     alert("Selected: " + board.name + " Interval: " + interval);
+    
+    
 };
 
 let element = document.getElementById("sprint-replay-controls");
-ReactDOM.render(<Main boards={boards} boardData={data} intervals={intervals} onPlaybackCommand={onPlaybackCommand} startReplay={startReplay} />, element);
+ReactDOM.render(<Main boards={boards} intervals={intervals} onPlaybackCommand={onPlaybackCommand} startReplay={startReplay} />, element);
