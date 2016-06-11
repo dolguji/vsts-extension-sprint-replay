@@ -3,7 +3,6 @@ import * as ReactDOM from "react-dom";
 import * as Contracts from "scripts/contracts"
 
 interface IBoardData extends React.Props<void> {
-    currentData: Contracts.IDay;
     currentIndex: number;
 }
 
@@ -13,7 +12,7 @@ export class BoardComponent extends React.Component<any, IBoardData> {
     }
 	
     public componentWillMount() {
-        this.state = { currentData: this.props.boardData.days[0], currentIndex: 0 };
+        this.state = { currentIndex: 0 };
     }
     
     public componentDidMount() {
@@ -40,14 +39,13 @@ export class BoardComponent extends React.Component<any, IBoardData> {
     public setBoardData(currentIndex:number, currentData : Contracts.IDay){
         this.setState({
             currentIndex: currentIndex,
-            currentData: currentData
         });
     }
     
 	public render() {
         return (
             <div>
-                <BoardColumnTable columns={this.state.currentData} />
+                <BoardColumnTable columns={this.props.boardData.days[this.state.currentIndex]} />
             </div>
         );
 	}
