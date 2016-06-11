@@ -249,7 +249,7 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
                 item.asOf = asOf;
                 result.push(item);
             }
-            return defer.resolve(result);
+            defer.resolve(result);
         });
         return defer.promise;
     }   
@@ -400,7 +400,7 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
                 item.asOf = asOf;
                 result.push(item);
             }
-            return defer.resolve(result);
+            defer.resolve(result);
         });
         
         return defer.promise;
@@ -419,3 +419,19 @@ function productionRun(dataProvider:IDataProvider) {
         }, errorCallback);
     }, errorCallback);
 }
+
+
+// serviceTest(new DataService(new DataProvider()));
+// function serviceTest(dataService: IDataService) {
+//     var errorCallback = (err?: any) => {
+//         console.log(err);
+//     };
+    
+//     dataService.getBoards().then((value:Client_Contracts.IBoards) => {
+//         var boardName = value.boards[0].name;
+//         var days = 1;
+//         dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
+//             data;
+//         }, errorCallback);
+//     }, errorCallback);
+// }
