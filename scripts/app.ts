@@ -230,30 +230,7 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
     }
     
     public getPayload(boardName: string, numberDaysFromToday?: number): IPromise<TFS_Wit_Contracts.WorkItem[]> {
-        var errorCallback = (err?: any) => {
-            console.log(err);
-        };
-    
-        return this.getBoard(boardName).then((board: Work_Contracts.Board) => {
-            var columnNames = this.getInProgressColumnNames(board.columns);
-            var allowedMappings = board.allowedMappings["Incoming"];
-            var workItemTypes = [];
-            for (var prop in allowedMappings) {
-                workItemTypes.push(prop);
-            }
-            var boardColumnFieldName = board.fields.columnField.referenceName;
-            defaultFields.push(boardColumnFieldName);
-            
-            //var date = "6/10/2016";
-            var promises = [];
-            numberDaysFromToday = 2 - 1; // 2 days
-            while (numberDaysFromToday >= 0) {
-                var date = this.getPreviousDate(numberDaysFromToday);
-                promises.push(this.getWorkItemsByDay(workItemTypes, columnNames, date, boardColumnFieldName));
-                numberDaysFromToday--;
-            }
-            return Q.allSettled(promises).then(promiseStates => promiseStates.map(state => state.value));
-        }, errorCallback);
+        return null;
     }
     
     public queryByWiql(workItemTypes: string[], columnNames: string[], date: string, boardColumnFieldName?: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
