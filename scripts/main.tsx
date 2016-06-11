@@ -4,6 +4,7 @@ import * as Contracts from "scripts/contracts"
 
 interface IBoardData extends React.Props<void> {
     currentData: Contracts.IDay;
+    currentIndex: number;
 }
 
 export class BoardComponent extends React.Component<any, IBoardData> {
@@ -12,16 +13,33 @@ export class BoardComponent extends React.Component<any, IBoardData> {
     }
 	
     public componentWillMount() {
-        this.state = { currentData: this.props.boardData.days[0] };
+        this.state = { currentData: this.props.boardData.days[0], currentIndex: 0 };
     }
     
     public componentDidMount() {
-        setTimeout(() => { this.setBoardData(this.props.boardData.days[1]); }, 2500);
-        setTimeout(() => { this.setBoardData(this.props.boardData.days[2]); }, 5000);
+        console.log("componentDidMount " + this.state.currentIndex);
+        this.play();
     }
     
-    public setBoardData(currentData : Contracts.IDay){
+    public componentDidUpdate() {
+        console.log("componentDidUpdate " + this.state.currentIndex);
+        this.play();
+    }
+    
+    public play(){
+        setTimeout(() => {
+            if (this.state.currentIndex < this.props.boardData.days.length - 1) {
+                var index = this.state.currentIndex;
+                index++;
+                this.setBoardData(index, this.props.boardData.days[index]);
+                console.log("playing next day " + this.state.currentIndex);
+            }
+        }, 1000);
+    }
+    
+    public setBoardData(currentIndex:number, currentData : Contracts.IDay){
         this.setState({
+            currentIndex: currentIndex,
             currentData: currentData
         });
     }
