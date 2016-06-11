@@ -113,7 +113,7 @@ export class DataService {
                     var columnData: Client_Contracts.IColumnData[] = []
                     for (var i=0; i < result.columns.length; i++) {
                         var column = result.columns[i];
-                        var itemsForColumn = workItems.filter((value, index) => value.fields["System.Column"] == column);
+                        var itemsForColumn = workItems.filter((value, index) => value.fields["System.BoardColumn"] == column);
                         var cards: Client_Contracts.ICard[] = [];
                         for (var i=0; i < itemsForColumn.length; i++) {
                             var item = itemsForColumn[i];
@@ -407,18 +407,19 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
     }   
 }
 
-productionRun(new DataProvider());
-function productionRun(dataProvider:IDataProvider) {
-    var errorCallback = (err?: any) => {
-        console.log(err);
-    };
-    dataProvider.getBoards().then((value:Work_Contracts.BoardReference[]) => {
-        var boardName = value[0].name;
-        dataProvider.getPayload(boardName).then((workItems: TFS_Wit_Contracts.WorkItem[]) => {
-            workItems;
-        }, errorCallback);
-    }, errorCallback);
-}
+
+// dataProviderTest(new DataProvider());
+// function dataProviderTest(dataProvider:IDataProvider) {
+//     var errorCallback = (err?: any) => {
+//         console.log(err);
+//     };
+//     dataProvider.getBoards().then((value:Work_Contracts.BoardReference[]) => {
+//         var boardName = value[0].name;
+//         dataProvider.getPayload(boardName).then((workItems: TFS_Wit_Contracts.WorkItem[]) => {
+//             workItems;
+//         }, errorCallback);
+//     }, errorCallback);
+// }
 
 
 // serviceTest(new DataService(new DataProvider()));
