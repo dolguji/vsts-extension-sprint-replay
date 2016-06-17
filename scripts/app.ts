@@ -33,6 +33,8 @@ export class DataService {
     }
     
     public getBoards(): IPromise<Client_Contracts.IBoards> {
+
+        console.log("Getting a list of boards...");
         var defer = Q.defer<Client_Contracts.IBoards>();
         var promise = this._dataProvider.getBoards().then((value: Work_Contracts.BoardReference[]) => {
             var result: Client_Contracts.IBoards = {
@@ -46,6 +48,7 @@ export class DataService {
                 }
                 result.boards.push(boardDef);
             }
+            console.log("Read " + result.boards.length + " Boards");
             defer.resolve(result);
         });
         return defer.promise;        
@@ -66,9 +69,10 @@ export class DataService {
         }
             
         var errorCallback = (err?: any) => {
-            console.log(err);
+            console.log("Getting board failed: " + err);
         };
     
+        console.log("Getting board [" + boardName + "]");
         this._dataProvider.getBoard(boardName).then((board: Work_Contracts.Board) => {
             for (var i=0; i < board.columns.length; i++) {
                 var column = board.columns[i];
@@ -104,11 +108,15 @@ export class DataService {
             }
             
             Q.allSettled<IWorkItem[]>(promises).then((promiseStates: Q.PromiseState<IWorkItem[]>[]) => {
+
+                console.log("Query promises done. Building payload...");
                 for (var i=0; i < promiseStates.length; i++) {
                     var promiseState = promiseStates[i];
                     var state = promiseState.state;
                     var workItems: IWorkItem[] = promiseState.value;
-                    this.convertWorkItemsToIDayPerColumn(result, workItems);               
+                    if (workItems.length > 0) {
+                        this.convertWorkItemsToIDayPerColumn(result, workItems);
+                    }               
                 }
                 defer.resolve(result);
             });
@@ -151,9 +159,11 @@ export class DataService {
     
     private getWorkItemsByDay(workItemTypes: string[], columnNames: string[], date: Date, boardColumnFieldName: string): IPromise<IWorkItem[]> {
         var dateString = this.getDate(date);
-        return this._dataProvider.queryByWiql(workItemTypes, columnNames, dateString, boardColumnFieldName).then((result: TFS_Wit_Contracts.WorkItemQueryResult) => {
-            var ids = result.workItems.map((value, index) => value.id);
-            return this._dataProvider.getWorkItems(ids, defaultFields, date)
+        console.log("Query work item ids for " + dateString);
+        return this._dataProvider.queryByWiql(workItemTypes, columnNames, dateString, boardColumnFieldName).then((queryResult: TFS_Wit_Contracts.WorkItemQueryResult) => {
+            var ids = queryResult.workItems.map((value, index) => value.id);
+            console.log("Work item ids on " + dateString + " => " + ids);
+            return this._dataProvider.getWorkItems(ids, defaultFields, date); 
         });
     }
     
@@ -246,6 +256,12 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
         var defer = Q.defer<IWorkItem[]>();
         var result: IWorkItem[] = [];
         var witClient = TFS_Wit_Client.getClient();
+
+        if (workItemIds.length == 0){
+            defer.resolve(result);
+            return defer.promise;
+        }
+
         witClient.getWorkItems(workItemIds, fields, asOf).then((workItems: TFS_Wit_Contracts.WorkItem[]) => {
             for (var i = 0; i<workItems.length;i++) {
                 var item = workItems[i] as IWorkItem;
@@ -254,6 +270,7 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
             }
             defer.resolve(result);
         });
+
         return defer.promise;
     }   
 

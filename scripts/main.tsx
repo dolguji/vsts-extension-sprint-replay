@@ -17,7 +17,10 @@ export class BoardComponent extends React.Component<any, IBoardData> {
     
     public componentDidMount() {
         console.log("componentDidMount " + this.state.currentIndex);
-        this.play();
+
+        if (this.props.boardData){
+            this.play();
+        }
     }
     
     public componentDidUpdate() {
