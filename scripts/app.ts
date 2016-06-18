@@ -198,7 +198,6 @@ export interface IDataProvider{
      getBoard(board: string): IPromise<Work_Contracts.Board>;
      getBoards(): IPromise<Work_Contracts.BoardReference[]>;
      queryByWiql(workItemTypes: string[], columnNames: string[], date: string, boardColumnFieldName?: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult>;
-     getPayload(boardName: string): IPromise<IWorkItem[]>;
      getWorkItems(workItemIds: number[], fields?: string[], asOf?: Date): IPromise<IWorkItem[]>;
 }
 
@@ -235,15 +234,12 @@ export abstract class BaseDataProvider
     }
 }
 
+
 export class DataProvider extends BaseDataProvider implements IDataProvider{
 
     constructor() { 
         super();
         this._teamContext = this.getTeamContext();
-    }
-    
-    public getPayload(boardName: string, numberDaysFromToday?: number): IPromise<TFS_Wit_Contracts.WorkItem[]> {
-        return null;
     }
     
     public queryByWiql(workItemTypes: string[], columnNames: string[], date: string, boardColumnFieldName?: string): IPromise<TFS_Wit_Contracts.WorkItemQueryResult> {
@@ -295,12 +291,13 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
     }
 }
 
+/** Get data from MSEng */
 export class DevDataProvider extends BaseDataProvider implements IDataProvider{
-
     private _webApi = new VSS_WebApi.VssHttpClient("https://mseng.visualstudio.com/");
 
     constructor(){
         super();
+        this._teamContext = this.getMsEngTeamContext();
     }
 
     public getMsEngTeamContext(): TFS_Core_Contracts.TeamContext {
@@ -314,7 +311,7 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
 
     public getBoards(): IPromise<Work_Contracts.BoardReference[]>
     {
-        var teamContext = this.getMsEngTeamContext();
+        var teamContext = this._teamContext;
         var project = teamContext.projectId || teamContext.project;
         var team = teamContext.teamId || teamContext.team;
         
@@ -371,7 +368,7 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
             timePrecision: false,
             '$top': top,
         };
-        var teamContext = this.getMsEngTeamContext();
+        var teamContext = this._teamContext;
         var project = teamContext.projectId || teamContext.project;
         var team = teamContext.teamId || teamContext.team;
         return this._webApi._beginRequest<TFS_Wit_Contracts.WorkItemQueryResult>({
@@ -387,12 +384,9 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
             },
             queryParams: queryValues,
             apiVersion: "1.0",
+            customHeaders : {'Authorization': 'Basic ' + btoa(":"+msengToken)},
             data: wiql
         });
-    }
-    
-    public getPayload(boardName: string): IPromise<IWorkItem[]> {
-        return null;
     }
 
     public getWorkItems(workItemIds: number[], fields?: string[], asOf?: Date): IPromise<IWorkItem[]> {
@@ -413,6 +407,7 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
             routeTemplate: "_apis/{area}/{resource}/{id}",
             responseIsCollection: true,
             queryParams: queryValues,
+            customHeaders : {'Authorization': 'Basic ' + btoa(":"+msengToken)},
             apiVersion: "1.0"
         }).then((workItems: TFS_Wit_Contracts.WorkItem[]) => {
             for (var i = 0; i<workItems.length;i++) {
@@ -442,7 +437,7 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
 // }
 
 
-serviceTest(new DataService(new DataProvider()));
+serviceTest(new DataService(new DevDataProvider()));
 function serviceTest(dataService: IDataService) {
     var errorCallback = (err?: any) => {
         console.log(err);
@@ -450,7 +445,7 @@ function serviceTest(dataService: IDataService) {
     
     dataService.getBoards().then((value:Client_Contracts.IBoards) => {
         var boardName = value.boards[0].name;
-        var days = 1;
+        var days = 5;
         dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
             data;
         }, errorCallback);
