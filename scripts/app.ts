@@ -162,8 +162,11 @@ export class DataService {
         console.log("Query work item ids for " + dateString);
         return this._dataProvider.queryByWiql(workItemTypes, columnNames, dateString, boardColumnFieldName).then((queryResult: TFS_Wit_Contracts.WorkItemQueryResult) => {
             var ids = queryResult.workItems.map((value, index) => value.id);
-            console.log("Work item ids on " + dateString + " => " + ids);
-            return this._dataProvider.getWorkItems(ids, defaultFields, date); 
+            console.log(dateString + " => " + ids.length + " items found");
+            
+            // read first 200 items
+            var idsToRead = ids.slice(0, 200);
+            return this._dataProvider.getWorkItems(idsToRead, defaultFields, date); 
         });
     }
     
@@ -204,6 +207,7 @@ export interface IDataProvider{
 export abstract class BaseDataProvider 
 {
     protected _teamContext: TFS_Core_Contracts.TeamContext;
+
     protected getBoardItems(workItemTypes: string[], columnNames: string[], date: string, boardColumnFieldName: string):any{
          var queryBuilder = "SELECT [System.Id],[System.WorkItemType],[System.Title],[System.State] FROM WorkItems WHERE [System.TeamProject] = '" + this._teamContext.project + "'";
         
@@ -264,6 +268,8 @@ export class DataProvider extends BaseDataProvider implements IDataProvider{
                 item.asOf = asOf;
                 result.push(item);
             }
+
+            console.log("Read " + workItems.length + " items on " + asOf);
             defer.resolve(result);
         });
 
@@ -393,8 +399,8 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
         var defer = Q.defer<IWorkItem[]>();
         var result: IWorkItem[] = [];
         var queryValues: any = {
-            ids: workItemIds,
-            fields: fields,
+            ids: workItemIds && workItemIds.join(","),
+            fields: fields && fields.join(","),
             asOf: asOf,
             '$expand': null,
         };
@@ -410,11 +416,12 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
             customHeaders : {'Authorization': 'Basic ' + btoa(":"+msengToken)},
             apiVersion: "1.0"
         }).then((workItems: TFS_Wit_Contracts.WorkItem[]) => {
-            for (var i = 0; i<workItems.length;i++) {
+            for (var i = 0; i < workItems.length; i++) {
                 var item = workItems[i] as IWorkItem;
                 item.asOf = asOf;
                 result.push(item);
             }
+            console.log("Read " + workItems.length + " items on " + asOf);
             defer.resolve(result);
         });
         
@@ -444,8 +451,10 @@ function serviceTest(dataService: IDataService) {
     };
     
     dataService.getBoards().then((value:Client_Contracts.IBoards) => {
+        
         var boardName = value.boards[0].name;
-        var days = 5;
+        var days = 2;
+
         dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
             data;
         }, errorCallback);
