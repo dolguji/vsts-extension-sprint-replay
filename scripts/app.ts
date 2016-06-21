@@ -238,7 +238,6 @@ export abstract class BaseDataProvider
     }
 }
 
-
 export class DataProvider extends BaseDataProvider implements IDataProvider{
 
     constructor() { 
@@ -429,7 +428,6 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
     }   
 }
 
-
 // dataProviderTest(new DataProvider());
 // function dataProviderTest(dataProvider:IDataProvider) {
 //     var errorCallback = (err?: any) => {
@@ -444,19 +442,14 @@ export class DevDataProvider extends BaseDataProvider implements IDataProvider{
 // }
 
 
-serviceTest(new DataService(new DevDataProvider()));
-function serviceTest(dataService: IDataService) {
-    var errorCallback = (err?: any) => {
-        console.log(err);
-    };
-    
-    dataService.getBoards().then((value:Client_Contracts.IBoards) => {
+// var dataService = new DataService(new DevDataProvider()); 
         
-        var boardName = value.boards[0].name;
-        var days = 2;
+// dataService.getBoards().then((value:Client_Contracts.IBoards) => {
+    // var boardName = value.boards[0].name;
+    // var days = 2;
 
-        dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
-            data;
-        }, errorCallback);
-    }, errorCallback);
-}
+    // dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
+        // data;
+    // }, (err) => { console.log(err);});
+// }, (err) => { console.log(err);});    
+

@@ -2,11 +2,13 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as Contracts from "scripts/contracts"
 import {BoardComponent} from "scripts/main"
+import {DataService, DevDataProvider} from "scripts/app"
+import Client_Contracts = require("scripts/contracts");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // mocked data
 
-let boards: Contracts.IBoardDefinition[] = [{ id: "epic", name: "Epics" }, { id: "feature", name: "Features" }, { id: "us", name: "User Stories" }];
+let mockedBoards: Contracts.IBoardDefinition[] = [{ id: "epic", name: "Epics" }, { id: "feature", name: "Features" }, { id: "us", name: "User Stories" }];
 let intervals = [1, 2, 3, 4, 5, 6];
 
 let data1 = [
@@ -69,15 +71,20 @@ class Main extends React.Component<IMainProps, IMainState> {
     }
     
     public startReplay(){
-        // use dataprovider to fetch data
-        var result = data;
-        
-        // set state
-        this.setState({ 
-            board: this.props.boards[0], 
-            interval: this.props.intervals[0],
-            boardData: result
-        });
+
+        var boardName = this.props.boards[1].name;
+        var days = 7;
+
+        dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
+            
+            // set state
+            this.setState({ 
+                board: this.props.boards[0],
+                interval: this.props.intervals[0],
+                boardData: data
+            });
+
+        }, (err) => { console.log(err);});
     }
     
     public render(): JSX.Element {
@@ -227,9 +234,15 @@ let onPlaybackCommand = (action: string) => {
 };
 let startReplay = (board: Contracts.IBoardDefinition, interval: number) => {
     alert("Selected: " + board.name + " Interval: " + interval);
-    
-    
 };
 
-let element = document.getElementById("sprint-replay-controls");
-ReactDOM.render(<Main boards={boards} intervals={intervals} onPlaybackCommand={onPlaybackCommand} startReplay={startReplay} />, element);
+var dataService = new DataService(new DevDataProvider()); 
+dataService.getBoards().then((value:Client_Contracts.IBoards) => {
+    let boards : Contracts.IBoardDefinition[] = [];
+    value.boards.forEach(board => { boards.push({ id: board.id, name: board.name }); });
+
+    let element = document.getElementById("sprint-replay-controls");
+    ReactDOM.render(<Main boards={boards} intervals={intervals} onPlaybackCommand={onPlaybackCommand} startReplay={startReplay} />, element);
+});
+    
+
