@@ -36,7 +36,7 @@ export class BoardComponent extends React.Component<any, IBoardData> {
                 this.setBoardData(index, this.props.boardData.days[index]);
                 console.log("playing next day " + this.state.currentIndex);
             }
-        }, 1000);
+        }, 600);
     }
     
     public setBoardData(currentIndex:number, currentData : Contracts.IDay){

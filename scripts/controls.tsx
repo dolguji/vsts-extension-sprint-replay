@@ -73,7 +73,7 @@ class Main extends React.Component<IMainProps, IMainState> {
     public startReplay(){
 
         var boardName = this.props.boards[1].name;
-        var days = 7;
+        var days = 21;
 
         dataService.getPayload(boardName, days).then((data: Client_Contracts.IData) => {
             
@@ -86,7 +86,7 @@ class Main extends React.Component<IMainProps, IMainState> {
 
         }, (err) => { console.log(err);});
     }
-    
+
     public render(): JSX.Element {
 
         // let startReplay = () => {

@@ -101,7 +101,7 @@ export class DataService {
             defaultFields.push(boardColumnFieldName);
             var promises = [];
 
-            while (numberDaysFromToday >= 0) {
+            while (numberDaysFromToday >= -1) {
                 var date = this.getPreviousDate(numberDaysFromToday);
                 promises.push(this.getWorkItemsByDay(workItemTypes, [], date, boardColumnFieldName));
                 numberDaysFromToday--;
